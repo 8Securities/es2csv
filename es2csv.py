@@ -112,7 +112,7 @@ class Es2csv:
             search_args['q'] = query
 
         if '_all' not in self.opts.fields:
-            search_args['_source_include'] = ','.join(self.opts.fields)
+            search_args['_source_includes'] = self.opts.fields
             self.csv_headers.extend([unicode(field, "utf-8") for field in self.opts.fields if '*' not in field])
 
         if self.opts.debug_mode:
@@ -125,8 +125,10 @@ class Es2csv:
 
         res = self.es_conn.search(**search_args)
         self.num_results = res['hits']['total']
+        self.hits = res['hits']
 
         print('Found {} results.'.format(self.num_results))
+        print('Hits: {}'.format(self.hits))
         if self.opts.debug_mode:
             print(json.dumps(res, ensure_ascii=False).encode('utf8'))
 
